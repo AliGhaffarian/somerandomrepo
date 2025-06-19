@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# List of IPs or hostnames
+HOSTS=("5.75.195.171" "37.202.239.227" "185.243.49.170" "45.159.148.136" "151.234.162.147" "94.182.129.205")
+
+# Timeout for each connection attempt (in seconds)
+TIMEOUT=3
+
+# Function to test SSH connection
+check_ssh() {
+    local host=$1
+    if nc -z -w $TIMEOUT "$host" 22 2>/dev/null; then
+        echo "SSH connection successful to $host"
+    fi
+}
+
+echo "Checking SSH (port 22) connectivity..."
+
+# Check SSH in parallel
+for host in "${HOSTS[@]}"; do
+    check_ssh "$host" &
+done
+
+# Wait for all background checks to finish
+wait
+
+echo "Done."
